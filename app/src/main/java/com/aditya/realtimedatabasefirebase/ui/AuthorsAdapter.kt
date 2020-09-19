@@ -31,4 +31,11 @@ class AuthorsAdapter : RecyclerView.Adapter<AuthorsAdapter.AuthorsViewHolder>() 
         this.authors = authors as MutableList<Author>
         notifyDataSetChanged()
     }
+
+    fun addAuthor(author: Author) {
+        if (!authors.contains(author)) {
+            authors.add(author)
+            notifyDataSetChanged()
+        }
+    }
 }

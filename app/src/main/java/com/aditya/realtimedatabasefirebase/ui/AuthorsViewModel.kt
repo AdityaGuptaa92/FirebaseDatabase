@@ -5,19 +5,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.aditya.realtimedatabasefirebase.data.Author
 import com.aditya.realtimedatabasefirebase.data.NODE_AUTHORS
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 
 class AuthorsViewModel : ViewModel() {
 
     private val dbAuthors = FirebaseDatabase.getInstance().getReference(NODE_AUTHORS)
 
     private val _authors = MutableLiveData<List<Author>>()
-    val authors : LiveData<List<Author>>
-    get() = _authors
+    val authors: LiveData<List<Author>>
+        get() = _authors
 
+    private val _author = MutableLiveData<Author>()
+    val author: LiveData<Author>
+        get() = _author
 
 
     private val _result = MutableLiveData<Exception?>()
@@ -36,14 +36,44 @@ class AuthorsViewModel : ViewModel() {
             }
     }
 
-    fun fetchAuthors() {
+    private val childEventListener = object : ChildEventListener {
+        override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
 
-        dbAuthors.addListenerForSingleValueEvent(object : ValueEventListener{
+            val author = snapshot.getValue(Author::class.java)
+            author?.id = snapshot.key
+            _author.value = author
+
+        }
+
+        override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+
+        }
+
+        override fun onChildRemoved(snapshot: DataSnapshot) {
+
+        }
+
+        override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+
+        }
+
+    }
+
+    fun getRealTimeUpdates() {
+        dbAuthors.addChildEventListener(childEventListener)
+    }
+
+    fun fetchAuthors() {
+        dbAuthors.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()) {
+                if (snapshot.exists()) {
 
                     val authors = mutableListOf<Author>()
-                    for(authorSnapshot in snapshot.children) {
+                    for (authorSnapshot in snapshot.children) {
                         val author = authorSnapshot.getValue(Author::class.java)
                         author?.id = authorSnapshot.key
                         author?.let {
@@ -60,6 +90,12 @@ class AuthorsViewModel : ViewModel() {
 
         })
 
+    }
+
+
+    override fun onCleared() {
+        super.onCleared()
+        dbAuthors.removeEventListener(childEventListener)
     }
 
 }
