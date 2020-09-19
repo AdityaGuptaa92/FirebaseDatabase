@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "481737823208",
+    "firebase_url": "https://realtimedatabasefirebase-94326.firebaseio.com",
+    "project_id": "realtimedatabasefirebase-94326",
+    "storage_bucket": "realtimedatabasefirebase-94326.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:481737823208:android:c10536f14fbe13efab0a5d",
+        "android_client_info": {
+          "package_name": "com.aditya.realtimedatabasefirebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "481737823208-h69lrugd22pp2avh5chhe5k944hf7g8s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzCpbVdDAMRkzproMsL5RL-z4lz3K38ik"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "481737823208-h69lrugd22pp2avh5chhe5k944hf7g8s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
