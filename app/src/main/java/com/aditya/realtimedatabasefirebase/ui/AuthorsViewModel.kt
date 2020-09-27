@@ -42,24 +42,24 @@ class AuthorsViewModel : ViewModel() {
             val author = snapshot.getValue(Author::class.java)
             author?.id = snapshot.key
             _author.value = author
-
         }
 
         override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-
+            val author = snapshot.getValue(Author::class.java)
+            author?.id = snapshot.key
+            _author.value = author
         }
 
         override fun onChildRemoved(snapshot: DataSnapshot) {
-
+            val author = snapshot.getValue(Author::class.java)
+            author?.id = snapshot.key
+            author?.isDeleted = true
+            _author.value = author
         }
 
-        override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+        override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
 
-        }
-
-        override fun onCancelled(error: DatabaseError) {
-
-        }
+        override fun onCancelled(error: DatabaseError) {}
 
     }
 
@@ -71,7 +71,6 @@ class AuthorsViewModel : ViewModel() {
         dbAuthors.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
-
                     val authors = mutableListOf<Author>()
                     for (authorSnapshot in snapshot.children) {
                         val author = authorSnapshot.getValue(Author::class.java)
@@ -85,11 +84,32 @@ class AuthorsViewModel : ViewModel() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-
             }
-
         })
 
+    }
+
+    fun updateAuthor(author: Author) {
+        dbAuthors.child(author.id!!).setValue(author)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    _result.value = null
+                } else {
+                    _result.value = it.exception
+                }
+            }
+    }
+
+
+    fun deleteAuthor(author: Author) {
+        dbAuthors.child(author.id!!).setValue(null)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    _result.value = null
+                } else {
+                    _result.value = it.exception
+                }
+            }
     }
 
 
@@ -97,5 +117,4 @@ class AuthorsViewModel : ViewModel() {
         super.onCleared()
         dbAuthors.removeEventListener(childEventListener)
     }
-
 }

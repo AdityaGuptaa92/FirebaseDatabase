@@ -18,7 +18,9 @@ import kotlinx.android.synthetic.main.fragment_authors.*
 import kotlinx.android.synthetic.main.fragment_authors.button_add
 
 
-class AddAuthorDialogFragment : DialogFragment() {
+class EditAuthorDialogFragment (
+    private val author: Author
+): DialogFragment() {
 
     private lateinit var viewModel: AuthorsViewModel
 
@@ -28,7 +30,7 @@ class AddAuthorDialogFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         viewModel = ViewModelProvider(this).get(AuthorsViewModel::class.java)
-        return inflater.inflate(R.layout.dialog_fragment_add_author,container,false)
+        return inflater.inflate(R.layout.dialog_fragment_edit_author,container,false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +40,8 @@ class AddAuthorDialogFragment : DialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        edit_text_name.setText(author.name)
 
         viewModel.result.observe(viewLifecycleOwner, {
             val message = if (it == null) {
@@ -55,9 +59,8 @@ class AddAuthorDialogFragment : DialogFragment() {
                 input_layout_name.error = getString(R.string.error_field_required)
                 return@setOnClickListener
             }
-            val author = Author()
             author.name = name
-            viewModel.addAuthor(author)
+            viewModel.updateAuthor(author)
         }
     }
 }

@@ -13,6 +13,8 @@ class AuthorsAdapter : RecyclerView.Adapter<AuthorsAdapter.AuthorsViewHolder>() 
 
     private var authors = mutableListOf<Author>()
 
+    var listener: RecyclerViewClickListener? = null
+
     class AuthorsViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AuthorsViewHolder {
@@ -23,6 +25,12 @@ class AuthorsAdapter : RecyclerView.Adapter<AuthorsAdapter.AuthorsViewHolder>() 
 
     override fun onBindViewHolder(holder: AuthorsViewHolder, position: Int) {
         holder.view.text_view_name.text = authors[position].name
+        holder.view.button_edit.setOnClickListener {
+            listener?.onRecyclerViewItemClicked(it, authors[position])
+        }
+        holder.view.button_delete.setOnClickListener {
+            listener?.onRecyclerViewItemClicked(it, authors[position])
+        }
     }
 
     override fun getItemCount(): Int = authors.size
@@ -35,7 +43,15 @@ class AuthorsAdapter : RecyclerView.Adapter<AuthorsAdapter.AuthorsViewHolder>() 
     fun addAuthor(author: Author) {
         if (!authors.contains(author)) {
             authors.add(author)
-            notifyDataSetChanged()
+
+        } else {
+            val index = authors.indexOf(author)
+            if (author.isDeleted) {
+                authors.removeAt(index)
+            } else {
+                authors[index] = author
+            }
         }
+        notifyDataSetChanged()
     }
 }
