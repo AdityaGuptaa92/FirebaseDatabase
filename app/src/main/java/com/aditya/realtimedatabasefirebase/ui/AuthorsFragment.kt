@@ -60,8 +60,8 @@ class AuthorsFragment : Fragment(), RecyclerViewClickListener {
 
             R.id.button_delete -> {
                 AlertDialog.Builder(requireContext()).also {
-                    it.setTitle("Are you sure you want to delete?")
-                    it.setPositiveButton("yes") { _, _ ->
+                    it.setTitle("Do you want to delete?")
+                    it.setPositiveButton("yes, sure") { _, _ ->
                         viewModel.deleteAuthor(author)
                     }
                 }.create().show()
